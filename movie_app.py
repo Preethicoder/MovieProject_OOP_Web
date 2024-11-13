@@ -19,10 +19,47 @@ class MovieApp:
     def __init__(self,storage):
         self._storage = storage
 
+    def is_present(self,movie_name):
+        """Check if a movie is present in the database."""
+        movie_list = self._storage.list_movies()
+        return any(movie["title"] == movie_name for movie in movie_list)
+
     def _command_add_movie(self):
-        pass
+        """Add a new movie to the database."""
+        movie_name = input("Enter movie name: ")
+        if movie_name.isspace():
+            print("Empty string not allowed")
+            return
+        movie_year = input("Enter movie year: ")
+        movie_rating = input("Enter movie rating: ")
+
+        if self.is_present(movie_name):
+            print(f"The movie '{movie_name}' is already present.")
+        else:
+            self._storage.add_movie(movie_name,movie_year,movie_rating,"")
+            print("Movie added successfully.")
+
+    def _command_delete_movie(self):
+        """Delete a movie from the database."""
+        delete_moviename = input("Enter the movie name to be deleted: ")
+        if self.is_present(delete_moviename):
+            self._storage.delete_movie(delete_moviename)
+            print("Movie deleted successfully.")
+        else:
+            print("Movie name not present.")
+
+    def _command_update_movie(self):
+        """Update the rating of an existing movie."""
+        movie_name = input("Enter the movie name to be updated: ")
+        if self.is_present(movie_name):
+            new_rating = input("Enter new rating: ")
+            self._storage.update_movie(movie_name, new_rating)
+            print("Movie rating updated.")
+        else:
+            print("Movie name not present.")
 
     def _command_list_movies(self):
+        """get list of movies from IStorage"""
         movies = self._storage.list_movies()
         print (movies)
 
@@ -30,7 +67,9 @@ class MovieApp:
     def run(self):
         func_dict = {
             "1": self._command_list_movies,
-
+            "2": self._command_add_movie,
+            "3": self._command_delete_movie,
+            "4": self._command_update_movie
         }
         """Main function to display the menu and handle user inputs."""
         print(display_menu)
