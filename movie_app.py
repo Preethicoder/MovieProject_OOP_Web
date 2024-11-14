@@ -1,3 +1,8 @@
+import os
+
+import requests
+from dotenv import load_dotenv
+load_dotenv()
 display_menu = """********** My Movies Database **********
 
 Menu:
@@ -12,9 +17,10 @@ Menu:
 8. Movies sorted by rating
 9. Movies sorted by year
 10. Filter movies by rating
+11. Generate Website
 
 Enter choice (1-10): """
-
+API_KEY = os.getenv('API_KEY')
 class MovieApp:
     def __init__(self,storage):
         self._storage = storage
@@ -24,19 +30,43 @@ class MovieApp:
         movie_list = self._storage.list_movies()
         return any(movie["title"] == movie_name for movie in movie_list)
 
+    def fetch_data (self,movie_name):
+        url = "http://www.omdbapi.com/"
+        params = {
+            'apikey' : API_KEY,
+            't':movie_name
+        }
+        try:
+            res = requests.get(url, params=params)
+            data = res.json()
+            if data.get('Response') == 'False':
+                print("Movie not found")
+                return None
+            return data
+        except requests.exceptions.ConnectionError as ne:
+            print("Network error occurred 1::", ne)
+            return None
+        except requests.exceptions.RequestException as e:
+            print("Network error occurred::",e)
+            return None
+
     def _command_add_movie(self):
         """Add a new movie to the database."""
         movie_name = input("Enter movie name: ")
         if movie_name.isspace():
             print("Empty string not allowed")
             return
-        movie_year = input("Enter movie year: ")
-        movie_rating = input("Enter movie rating: ")
+        data = self.fetch_data(movie_name)
+        if data is None:
+            return
+        movie_year = data["Year"]
+        movie_rating = data["imdbRating"]
+        movie_poster = data["Poster"]
 
         if self.is_present(movie_name):
             print(f"The movie '{movie_name}' is already present.")
         else:
-            self._storage.add_movie(movie_name,movie_year,movie_rating,"")
+            self._storage.add_movie(movie_name,movie_year,movie_rating,movie_poster)
             print("Movie added successfully.")
 
     def _command_delete_movie(self):
@@ -63,13 +93,51 @@ class MovieApp:
         movies = self._storage.list_movies()
         print (movies)
 
+    def _command_stats(self):
+        self._storage.stats()
+
+
+    def _command_random_movies(self):
+        self._storage.random_movies()
+
+    def _command_search_movie(self):
+        movie_name = input("Enter the movie name to be searched: ")
+        if not self.is_present(movie_name):
+            print("Movie not present")
+        else:
+            self._storage.search_movie(movie_name)
+
+    def _command_Movies_sorted_by_rating(self):
+        self._storage.movie_sorted_by_rating()
+
+    def _command_movie_sorted_by_year(self):
+        self._storage.movie_sorted_by_year()
+
+    def _command_filter_movies(self):
+        """Filter movies based on user rating."""
+        user_rating = input("Enter minimum rating (leave blank for no minimum rating):")
+        start_year = input("Enter start year (leave blank for no start year):")
+        end_year = input("leave blank for no end year")
+        self._storage.filter_movies(user_rating,start_year,end_year)
+
+    def _command_generate_website(self):
+        self._storage.generate_website()
+        print("Website was successfully generated to the file movie_website.html")
 
     def run(self):
         func_dict = {
             "1": self._command_list_movies,
             "2": self._command_add_movie,
             "3": self._command_delete_movie,
-            "4": self._command_update_movie
+            "4": self._command_update_movie,
+            "5": self._command_stats,
+            "6": self._command_random_movies,
+            "7": self._command_search_movie,
+            "8": self._command_Movies_sorted_by_rating,
+            "9": self._command_movie_sorted_by_year,
+            "10": self._command_filter_movies,
+            "11": self._command_generate_website
+
         }
         """Main function to display the menu and handle user inputs."""
         print(display_menu)
