@@ -49,7 +49,11 @@ class MovieApp:
         except requests.exceptions.RequestException as e:
             print("Network error occurred::",e)
             return None
+    def fetch_movielink(self,imdbid):
+        imdb_id = imdbid
+        imdb_url = f"https://www.imdb.com/title/{imdb_id}/"
 
+        return imdb_url
     def _command_add_movie(self):
         """Add a new movie to the database."""
         movie_name = input("Enter movie name: ")
@@ -59,14 +63,19 @@ class MovieApp:
         data = self.fetch_data(movie_name)
         if data is None:
             return
+        if data["imdbID"] !=" ":
+           movie_link = self.fetch_movielink(data["imdbID"])
+        else :
+            movie_link = ""
         movie_year = data["Year"]
         movie_rating = data["imdbRating"]
         movie_poster = data["Poster"]
+        imdb_link = movie_link
 
         if self.is_present(movie_name):
             print(f"The movie '{movie_name}' is already present.")
         else:
-            self._storage.add_movie(movie_name,movie_year,movie_rating,movie_poster)
+            self._storage.add_movie(movie_name,movie_year,movie_rating,movie_poster,imdb_link)
             print("Movie added successfully.")
 
     def _command_delete_movie(self):

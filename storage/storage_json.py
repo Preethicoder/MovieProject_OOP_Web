@@ -58,13 +58,14 @@ class StorageJson(IStorage):
                   f"Movie Rating: {movies['rating']}")
             print("-" * 100)
 
-    def add_movie(self,movie_name, movie_year, movie_rating, poster):
+    def add_movie(self,movie_name, movie_year, movie_rating, poster,imdbmovielink):
         """Add a new movie to the list and update the JSON file."""
         movie_dict = {
             "title": movie_name,
             "year": movie_year,
             "rating": movie_rating,
-            "poster":poster
+            "poster":poster,
+            "imdbmovielink":imdbmovielink
         }
         data = self.list_movies()
         data.append(movie_dict)
@@ -131,9 +132,10 @@ class StorageJson(IStorage):
         output = ''
         output += f'<li>\n'
         output += f'<div class="movie">\n'
-        output += f'<img class="movie-poster" src={movie["poster"]}/>\n'
+        output += f'<a href={movie["imdbmovielink"]} target="_blank"><img class="movie-poster" src={movie["poster"]}/></a>\n'
         output += f'<div class="movie-title">{movie["title"]}</div>\n'
         output += f'<div class="movie-year">{movie["year"]}</div>\n'
+        output += f'<div class="movie-year">IMDB-Rating:{movie["rating"]}</div>\n'
         output += '</div>\n'
         output += '</li>'
         return output
