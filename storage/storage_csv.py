@@ -7,14 +7,15 @@ class StorageCsv(IStorage):
     def __init__(self,file_name):
         self.file_name = file_name
 
-    def add_movie(self, title, year, rating, poster,imdbmovielink):
+    def add_movie(self, title, year, rating, poster,imdbmovielink,movienotes):
         """Add a new movie to the list and update the JSON file."""
         movie_dict = {
             "title": title,
             "year": year,
             "rating": rating,
             "poster":poster,
-            "imdbmovielink":imdbmovielink
+            "imdbmovielink":imdbmovielink,
+            "movienotes":movienotes
         }
         data = self.list_movies()
         print("data:::",data)
@@ -30,13 +31,13 @@ class StorageCsv(IStorage):
                 movie_list.remove(movie)
         self.update_csv(movie_list)
 
-    def update_movie(self,title,rating):
+    def update_movie(self,title,movie_note):
         """Update the rating of a movie and update the JSON file."""
         movie_list = self.list_movies()
         for movie in movie_list:
             if movie["title"] == title:
-                movie["rating"] = rating
-        self.update_csv(movie_list)
+                movie["movienotes"] = movie_note
+        self.update_json(movie_list)
 
     def stats(self):
         """Calculate and display movie statistics like average and median ratings."""

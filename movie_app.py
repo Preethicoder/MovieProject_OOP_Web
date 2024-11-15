@@ -75,7 +75,7 @@ class MovieApp:
         if self.is_present(movie_name):
             print(f"The movie '{movie_name}' is already present.")
         else:
-            self._storage.add_movie(movie_name,movie_year,movie_rating,movie_poster,imdb_link)
+            self._storage.add_movie(movie_name,movie_year,movie_rating,movie_poster,imdb_link,"")
             print("Movie added successfully.")
 
     def _command_delete_movie(self):
@@ -91,9 +91,9 @@ class MovieApp:
         """Update the rating of an existing movie."""
         movie_name = input("Enter the movie name to be updated: ")
         if self.is_present(movie_name):
-            new_rating = input("Enter new rating: ")
-            self._storage.update_movie(movie_name, new_rating)
-            print("Movie rating updated.")
+            movie_note = input("Enter movie note: ")
+            self._storage.update_movie(movie_name, movie_note)
+            print("Added Movie note.")
         else:
             print("Movie name not present.")
 

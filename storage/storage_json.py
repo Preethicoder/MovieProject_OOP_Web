@@ -58,14 +58,15 @@ class StorageJson(IStorage):
                   f"Movie Rating: {movies['rating']}")
             print("-" * 100)
 
-    def add_movie(self,movie_name, movie_year, movie_rating, poster,imdbmovielink):
+    def add_movie(self,movie_name, movie_year, movie_rating, poster,imdbmovielink, movienotes):
         """Add a new movie to the list and update the JSON file."""
         movie_dict = {
             "title": movie_name,
             "year": movie_year,
             "rating": movie_rating,
             "poster":poster,
-            "imdbmovielink":imdbmovielink
+            "imdbmovielink":imdbmovielink,
+            "movienotes": movienotes
         }
         data = self.list_movies()
         data.append(movie_dict)
@@ -119,12 +120,12 @@ class StorageJson(IStorage):
         print(f"Rating: {random_movie['rating']}")
         print(f"Year: {random_movie['year']}")
 
-    def update_movie(self,movie_name, new_rating):
+    def update_movie(self,movie_name, movie_note):
         """Update the rating of a movie and update the JSON file."""
         movie_list = self.list_movies()
         for movie in movie_list:
             if movie["title"] == movie_name:
-                movie["rating"] = new_rating
+                movie["movienotes"] = movie_note
         self.update_json(movie_list)
 
     def serialize_movie(self,movie):
@@ -132,7 +133,11 @@ class StorageJson(IStorage):
         output = ''
         output += f'<li>\n'
         output += f'<div class="movie">\n'
-        output += f'<a href={movie["imdbmovielink"]} target="_blank"><img class="movie-poster" src={movie["poster"]}/></a>\n'
+
+        if "movienotes" in movie:
+            output += f'<a href={movie["imdbmovielink"]} target="_blank"><img class="movie-poster" src={movie["poster"]}/><div class ="hide" >{movie["movienotes"]}</div></a>\n'
+        else:
+            output += f'<a href={movie["imdbmovielink"]} target="_blank"><img class="movie-poster" src={movie["poster"]}/></a>\n'
         output += f'<div class="movie-title">{movie["title"]}</div>\n'
         output += f'<div class="movie-year">{movie["year"]}</div>\n'
         output += f'<div class="movie-year">IMDB-Rating:{movie["rating"]}</div>\n'
