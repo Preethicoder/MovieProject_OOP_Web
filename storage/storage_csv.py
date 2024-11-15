@@ -1,4 +1,4 @@
-from istorage import IStorage
+from storage.istorage import IStorage
 import os
 import csv
 import random
@@ -138,20 +138,20 @@ class StorageCsv(IStorage):
         output += f'<div class="movie">\n'
         output += f'<img class="movie-poster" src={movie["poster"]}/>\n'
         output += f'<div class="movie-title">{movie["title"]}</div>\n'
-        output += f'<div class={movie["year"]}>2008</div>'
+        output += f'<div class="movie-year">{movie["year"]}</div>\n'
         output += '</div>\n'
         output += '</li>'
         return output
 
     def write_newhtml(self, result):
         """with new generate data it create new html file"""
-        with open("_static/index_template.html", "r") as handle:
+        with open("../_static/index_template.html", "r") as handle:
             html_content = handle.read()
 
         html_content = html_content.replace("__TEMPLATE_MOVIE_GRID__", result)
         html_content = html_content.replace("__TEMPLATE_TITLE__", "My Favorite movies")
 
-        with open("_static/movie_website.html", "w") as handle1:
+        with open("../_static/movie_website.html", "w") as handle1:
             handle1.write(html_content)
 
     def generate_website(self):

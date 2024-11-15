@@ -1,4 +1,4 @@
-from istorage import IStorage
+from storage.istorage import IStorage
 import os
 import json
 import random
@@ -133,7 +133,7 @@ class StorageJson(IStorage):
         output += f'<div class="movie">\n'
         output += f'<img class="movie-poster" src={movie["poster"]}/>\n'
         output += f'<div class="movie-title">{movie["title"]}</div>\n'
-        output += f'<div class={movie["year"]}>2008</div>'
+        output += f'<div class="movie-year">{movie["year"]}</div>\n'
         output += '</div>\n'
         output += '</li>'
         return output
