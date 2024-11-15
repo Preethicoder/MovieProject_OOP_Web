@@ -1,0 +1,42 @@
+[
+    {
+        "title": "Titanic",
+        "year": "1994",
+        "rating": "9.8"
+    },
+    {
+        "title": "Blind side",
+        "year": "2002",
+        "rating": "4"
+    },
+    {
+        "title": "The Shawshank Redemption",
+        "year": "2002",
+        "rating": "8.5"
+    },
+    {
+        "title": "The Room",
+        "year": "2001",
+        "rating": "3.5"
+    },
+    {
+        "title": "The Batman",
+        "year": "2007",
+        "rating": "8.6"
+    },
+    {
+        "title": "Avenger",
+        "year": "2012",
+        "rating": "9.2"
+    },
+    {
+        "title": "Tangled",
+        "year": "2004",
+        "rating": "10.0"
+    },
+    {
+        "title": "Blind Side",
+        "year": "2002",
+        "rating": "9.8"
+    }
+]
