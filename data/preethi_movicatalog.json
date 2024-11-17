@@ -1,0 +1,39 @@
+[
+    {
+        "title": "Tangled",
+        "year": "2010",
+        "rating": "7.7",
+        "poster": "https://m.media-amazon.com/images/M/MV5BMTAxNDYxMjg0MjNeQTJeQWpwZ15BbWU3MDcyNTk2OTM@._V1_SX300.jpg",
+        "imdbmovielink": "https://www.imdb.com/title/tt0398286/"
+    },
+    {
+        "title": "The Lion King",
+        "year": "1994",
+        "rating": "8.5",
+        "poster": "https://m.media-amazon.com/images/M/MV5BZGRiZDZhZjItM2M3ZC00Y2IyLTk3Y2MtMWY5YjliNDFkZTJlXkEyXkFqcGc@._V1_SX300.jpg",
+        "imdbmovielink": "https://www.imdb.com/title/tt0110357/"
+    },
+    {
+        "title": "The Intern",
+        "year": "2015",
+        "rating": "7.1",
+        "poster": "https://m.media-amazon.com/images/M/MV5BMTUyNjE5NjI5OF5BMl5BanBnXkFtZTgwNzYzMzU3NjE@._V1_SX300.jpg",
+        "imdbmovielink": "https://www.imdb.com/title/tt2361509/"
+    },
+    {
+        "title": "Julie & Julia",
+        "year": "2009",
+        "rating": "7.0",
+        "poster": "https://m.media-amazon.com/images/M/MV5BMzA4NjA2NjI2NV5BMl5BanBnXkFtZTcwOTEzNzI2Mg@@._V1_SX300.jpg",
+        "imdbmovielink": "https://www.imdb.com/title/tt1135503/",
+        "movienotes": "My Favorite movie"
+    },
+    {
+        "title": "Frozen",
+        "year": "2013",
+        "rating": "7.4",
+        "poster": "https://m.media-amazon.com/images/M/MV5BMTQ1MjQwMTE5OF5BMl5BanBnXkFtZTgwNjk3MTcyMDE@._V1_SX300.jpg",
+        "imdbmovielink": "https://www.imdb.com/title/tt2294629/",
+        "movienotes": "My Daughter favorite movie"
+    }
+]
