@@ -9,7 +9,7 @@ class StorageJson(IStorage):
 
     def update_json(self,movie_list):
         """Update the JSON file with the modified movie list."""
-        with open(self.file_path, "w") as handle:
+        with open(self.file_path, "w", encoding="utf-8") as handle:
             json.dump(movie_list, handle, indent=4)
 
     def search_movie(self,search_item):
@@ -23,11 +23,11 @@ class StorageJson(IStorage):
     def list_movies(self):
         # Check if the file exists; if not, create it with an empty list
         if not os.path.exists(self.file_path):
-            with open(self.file_path, "w") as handle:
+            with open(self.file_path, "w", encoding="utf-8") as handle:
                 json.dump([], handle)
 
         # Try to open and read the JSON file
-        with open(self.file_path, "r") as handle:
+        with open(self.file_path, "r", encoding="utf-8") as handle:
             data = json.load(handle)
         return data
 
@@ -44,7 +44,7 @@ class StorageJson(IStorage):
         """Filter and display movies with a given rating."""
         movie_list = self.list_movies()
         for movie in movie_list:
-            if movie["rating"] >= user_rating and movie["year"] >= start_year and movie["year"] <= end_year:
+            if movie["rating"] >= user_rating and start_year <= movie["year"] <= end_year:
                 print(f"Movie Title: {movie['title']}  Movie Year: {movie['year']}  "
                       f"Movie Rating: {movie['rating']}")
                 print("-" * 100)
@@ -58,15 +58,15 @@ class StorageJson(IStorage):
                   f"Movie Rating: {movies['rating']}")
             print("-" * 100)
 
-    def add_movie(self,movie_name, movie_year, movie_rating, poster,imdbmovielink, movienotes):
+    def add_movie(self,movie_name, movie_year, movie_rating, poster,imdb_movielink, movie_notes):
         """Add a new movie to the list and update the JSON file."""
         movie_dict = {
             "title": movie_name,
             "year": movie_year,
             "rating": movie_rating,
             "poster":poster,
-            "imdbmovielink":imdbmovielink,
-            "movienotes": movienotes
+            "imdbmovielink":imdb_movielink,
+            "movienotes": movie_notes
         }
         data = self.list_movies()
         data.append(movie_dict)
@@ -128,7 +128,8 @@ class StorageJson(IStorage):
                 movie["movienotes"] = movie_note
         self.update_json(movie_list)
 
-    def serialize_movie(self,movie):
+    @staticmethod
+    def serialize_movie(movie):
         """Serialize and create html tag for each item"""
         output = ''
         output += f'<li>\n'
@@ -145,8 +146,9 @@ class StorageJson(IStorage):
         output += '</li>'
         return output
 
-    def write_newhtml(self,result):
-        """with new generate data it create new html file"""
+    @staticmethod
+    def write_newhtml(result):
+        """with new generate data it creates new html file"""
         with open("_static/index_template.html", "r") as handle:
             html_content = handle.read()
 
@@ -160,5 +162,5 @@ class StorageJson(IStorage):
         result = ""
         movie_data = self.list_movies()
         for index,movie in enumerate(movie_data):
-            result += self.serialize_movie(movie)
-        self.write_newhtml(result)
+            result += StorageJson.serialize_movie(movie)
+        StorageJson.write_newhtml(result)

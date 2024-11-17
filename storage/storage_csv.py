@@ -6,19 +6,20 @@ import random
 class StorageCsv(IStorage):
     def __init__(self,file_name):
         self.file_name = file_name
+        print("csv",file_name)
 
     def add_movie(self, title, year, rating, poster,imdbmovielink,movienotes):
+        """Add a new movie to the list and update the JSON file."""
         """Add a new movie to the list and update the JSON file."""
         movie_dict = {
             "title": title,
             "year": year,
             "rating": rating,
-            "poster":poster,
-            "imdbmovielink":imdbmovielink,
-            "movienotes":movienotes
+            "poster": poster,
+            "imdbmovielink": imdbmovielink,
+            "movienotes": movienotes
         }
         data = self.list_movies()
-        print("data:::",data)
         data.append(movie_dict)
         self.update_csv(data)
 
@@ -37,7 +38,7 @@ class StorageCsv(IStorage):
         for movie in movie_list:
             if movie["title"] == title:
                 movie["movienotes"] = movie_note
-        self.update_json(movie_list)
+        self.update_csv(movie_list)
 
     def stats(self):
         """Calculate and display movie statistics like average and median ratings."""
@@ -68,15 +69,25 @@ class StorageCsv(IStorage):
                 print(f"Minimum rated Movie: {movie['title']}")
 
     def list_movies(self):
+        """
+           Reads and returns a list of movies from the CSV file.
+           If the file doesn't exist, it creates one with the appropriate headers.
+           """
         data = []
-        if not os.path.exists(self.file_name):
-            with open(self.file_name,mode="w",newline="")as fileobj:
-                csv.DictWriter(fileobj,"")
 
-        with open(self.file_name,"r") as filehandle:
+        # Check if the file exists; if not, create it with headers
+        if not os.path.exists(self.file_name):
+            with open(self.file_name, mode="w", newline="", encoding="utf-8") as fileobj:
+                writer = csv.DictWriter(fileobj,
+                                        fieldnames=["title", "year", "rating", "poster", "imdbmovielink", "movienotes"])
+                writer.writeheader()
+            return data  # Return an empty list for a new file
+
+        # Open the file and read data
+        with open(self.file_name, "r", encoding="utf-8") as filehandle:
             reader = csv.DictReader(filehandle)
-            for info in reader:
-                data.append(dict(info))
+            for row in reader:
+                 data.append(row)
 
         return data
 
@@ -93,7 +104,7 @@ class StorageCsv(IStorage):
         """Filter and display movies with a given rating."""
         movie_list = self.list_movies()
         for movie in movie_list:
-            if movie["rating"] >= user_rating and movie["year"] >= start_year and movie["year"] <= end_year:
+            if movie["rating"] >= user_rating and start_year <= movie["year"] <= end_year:
                 print(f"Movie Title: {movie['title']}  Movie Year: {movie['year']}  "
                       f"Movie Rating: {movie['rating']}")
                 print("-" * 100)
@@ -127,18 +138,24 @@ class StorageCsv(IStorage):
         print(f"Year: {random_movie['year']}")
 
     def update_csv(self,movie_list):
-        """Overwrite the CSV file with a new list of movies."""
-        with open(self.file_name, mode="w", newline="") as fileobj:
-            writer = csv.DictWriter(fileobj, fieldnames=["title", "year", "rating","poster"])
+        """Overwrite the CSV file with the updated data."""
+        with open(self.file_name, "w", encoding="utf-8", newline="") as file:
+            fieldnames = ["title", "year", "rating", "poster", "imdbmovielink", "movienotes"]
+            writer = csv.DictWriter(file, fieldnames=fieldnames)
             writer.writeheader()
             writer.writerows(movie_list)
 
-    def serialize_movie(self, movie):
+    @staticmethod
+    def serialize_movie(movie):
         """Serialize and create html tag for each item"""
         output = ''
         output += f'<li>\n'
         output += f'<div class="movie">\n'
-        output += f'<a href={movie["imdbmovielink"]} target="_blank"><img class="movie-poster" src={movie["poster"]}/></a>\n'
+
+        if "movienotes" in movie:
+            output += f'<a href={movie["imdbmovielink"]} target="_blank"><img class="movie-poster" src={movie["poster"]}/><div class ="hide" >{movie["movienotes"]}</div></a>\n'
+        else:
+            output += f'<a href={movie["imdbmovielink"]} target="_blank"><img class="movie-poster" src={movie["poster"]}/></a>\n'
         output += f'<div class="movie-title">{movie["title"]}</div>\n'
         output += f'<div class="movie-year">{movie["year"]}</div>\n'
         output += f'<div class="movie-year">IMDB-Rating:{movie["rating"]}</div>\n'
@@ -146,21 +163,22 @@ class StorageCsv(IStorage):
         output += '</li>'
         return output
 
-    def write_newhtml(self, result):
-        """with new generate data it create new html file"""
-        with open("../_static/index_template.html", "r") as handle:
+    @staticmethod
+    def write_newhtml(result):
+        """with new generate data it creates new html file"""
+        with open("_static/index_template.html", "r") as handle:
             html_content = handle.read()
 
         html_content = html_content.replace("__TEMPLATE_MOVIE_GRID__", result)
         html_content = html_content.replace("__TEMPLATE_TITLE__", "My Favorite movies")
 
-        with open("../_static/movie_website.html", "w") as handle1:
+        with open("_static/movie_website.html", "w") as handle1:
             handle1.write(html_content)
 
     def generate_website(self):
         result = ""
         movie_data = self.list_movies()
         for index, movie in enumerate(movie_data):
-            result += self.serialize_movie(movie)
-        self.write_newhtml(result)
+            result += StorageCsv.serialize_movie(movie)
+        StorageCsv.write_newhtml(result)
 

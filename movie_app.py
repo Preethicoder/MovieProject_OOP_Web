@@ -2,6 +2,7 @@ import os
 
 import requests
 from dotenv import load_dotenv
+
 load_dotenv()
 display_menu = """********** My Movies Database **********
 
@@ -19,22 +20,26 @@ Menu:
 10. Filter movies by rating
 11. Generate Website
 
-Enter choice (1-10): """
+Enter choice (1-11): """
 API_KEY = os.getenv('API_KEY')
+
+
 class MovieApp:
-    def __init__(self,storage):
+    def __init__(self, storage):
         self._storage = storage
 
-    def is_present(self,movie_name):
+    def is_present(self, movie_name):
         """Check if a movie is present in the database."""
         movie_list = self._storage.list_movies()
         return any(movie["title"] == movie_name for movie in movie_list)
 
-    def fetch_data (self,movie_name):
+    @staticmethod
+    def fetch_data( movie_name):
+        """fetch data about the user given movie_name"""
         url = "http://www.omdbapi.com/"
         params = {
-            'apikey' : API_KEY,
-            't':movie_name
+            'apikey': API_KEY,
+            't': movie_name
         }
         try:
             res = requests.get(url, params=params)
@@ -47,13 +52,17 @@ class MovieApp:
             print("Network error occurred 1::", ne)
             return None
         except requests.exceptions.RequestException as e:
-            print("Network error occurred::",e)
+            print("Network error occurred::", e)
             return None
-    def fetch_movielink(self,imdbid):
-        imdb_id = imdbid
+
+    @staticmethod
+    def fetch_movielink(imdb_id):
+        """based on the imdb_id it creates the url link for the movie"""
+        imdb_id = imdb_id
         imdb_url = f"https://www.imdb.com/title/{imdb_id}/"
 
         return imdb_url
+
     def _command_add_movie(self):
         """Add a new movie to the database."""
         movie_name = input("Enter movie name: ")
@@ -63,9 +72,9 @@ class MovieApp:
         data = self.fetch_data(movie_name)
         if data is None:
             return
-        if data["imdbID"] !=" ":
-           movie_link = self.fetch_movielink(data["imdbID"])
-        else :
+        if data["imdbID"] != " ":
+            movie_link = self.fetch_movielink(data["imdbID"])
+        else:
             movie_link = ""
         movie_year = data["Year"]
         movie_rating = data["imdbRating"]
@@ -75,14 +84,14 @@ class MovieApp:
         if self.is_present(movie_name):
             print(f"The movie '{movie_name}' is already present.")
         else:
-            self._storage.add_movie(movie_name,movie_year,movie_rating,movie_poster,imdb_link,"")
+            self._storage.add_movie(movie_name, movie_year, movie_rating, movie_poster, imdb_link, "")
             print("Movie added successfully.")
 
     def _command_delete_movie(self):
         """Delete a movie from the database."""
-        delete_moviename = input("Enter the movie name to be deleted: ")
-        if self.is_present(delete_moviename):
-            self._storage.delete_movie(delete_moviename)
+        delete_movie_name = input("Enter the movie name to be deleted: ")
+        if self.is_present(delete_movie_name):
+            self._storage.delete_movie(delete_movie_name)
             print("Movie deleted successfully.")
         else:
             print("Movie name not present.")
@@ -100,11 +109,10 @@ class MovieApp:
     def _command_list_movies(self):
         """get list of movies from IStorage"""
         movies = self._storage.list_movies()
-        print (movies)
+        print(movies)
 
     def _command_stats(self):
         self._storage.stats()
-
 
     def _command_random_movies(self):
         self._storage.random_movies()
@@ -116,7 +124,7 @@ class MovieApp:
         else:
             self._storage.search_movie(movie_name)
 
-    def _command_Movies_sorted_by_rating(self):
+    def _command_movies_sorted_by_rating(self):
         self._storage.movie_sorted_by_rating()
 
     def _command_movie_sorted_by_year(self):
@@ -127,7 +135,7 @@ class MovieApp:
         user_rating = input("Enter minimum rating (leave blank for no minimum rating):")
         start_year = input("Enter start year (leave blank for no start year):")
         end_year = input("leave blank for no end year")
-        self._storage.filter_movies(user_rating,start_year,end_year)
+        self._storage.filter_movies(user_rating, start_year, end_year)
 
     def _command_generate_website(self):
         self._storage.generate_website()
@@ -142,7 +150,7 @@ class MovieApp:
             "5": self._command_stats,
             "6": self._command_random_movies,
             "7": self._command_search_movie,
-            "8": self._command_Movies_sorted_by_rating,
+            "8": self._command_movies_sorted_by_rating,
             "9": self._command_movie_sorted_by_year,
             "10": self._command_filter_movies,
             "11": self._command_generate_website
