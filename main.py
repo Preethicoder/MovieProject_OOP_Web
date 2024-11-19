@@ -2,14 +2,11 @@ from storage.storage_csv import StorageCsv
 from storage.storage_json import StorageJson
 from movie_app import MovieApp
 import sys
-from dotenv import load_dotenv
-import os
+
 
 
 
 if __name__ == "__main__":
-    load_dotenv()  # Load environment variables from the .env file
-    secret_key= os.getenv("API_KEY")
     n = len(sys.argv)
     if n < 2:
         print("Usage: python3 main.py <file.json/csv>")
@@ -23,7 +20,7 @@ if __name__ == "__main__":
             elif file_name.endswith(".csv"):
                 storage = StorageCsv(f"data/{file_name}")
             else:
-                print(f"Unsupported file type: {file_name}")
+                print(f"Invalid argument: {file_name}. Please provide a .json or .csv file.")
                 continue
 
             movie_app = MovieApp(storage)
