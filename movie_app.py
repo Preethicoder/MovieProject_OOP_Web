@@ -109,7 +109,6 @@ class MovieApp:
     def _command_list_movies(self):
         """get list of movies from IStorage"""
         movies = self._storage.list_movies()
-        print(movies)
         for index,movie in enumerate(movies):
             print(f"{index + 1}:{movies[index]['title']}")
 
