@@ -35,5 +35,13 @@
         "poster": "https://m.media-amazon.com/images/M/MV5BMTQ1MjQwMTE5OF5BMl5BanBnXkFtZTgwNjk3MTcyMDE@._V1_SX300.jpg",
         "imdbmovielink": "https://www.imdb.com/title/tt2294629/",
         "movienotes": "My Daughter favorite movie"
+    },
+    {
+        "title": "The Vow",
+        "year": "2012",
+        "rating": "6.8",
+        "poster": "https://m.media-amazon.com/images/M/MV5BMjE1OTU5MjU0N15BMl5BanBnXkFtZTcwMzI3OTU5Ng@@._V1_SX300.jpg",
+        "imdbmovielink": "https://www.imdb.com/title/tt1606389/",
+        "movienotes": ""
     }
 ]

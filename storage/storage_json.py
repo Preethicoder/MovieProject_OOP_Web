@@ -1,3 +1,4 @@
+from scripts.serializedata import SerializeData
 from storage.istorage import IStorage
 import os
 import json
@@ -75,31 +76,8 @@ class StorageJson(IStorage):
     def stats(self):
         """Calculate and display movie statistics like average and median ratings."""
         movie_list = self.list_movies()
-        print(movie_list)
-        ratings = [float(movie["rating"])if movie["rating"] != "N/A" else 0.0 for movie in movie_list]
-        avg_rating = sum(ratings) / len(ratings)
-        print(f"Average rating: {avg_rating:.2f}")
+        return movie_list
 
-        sorted_rating = sorted(ratings)
-        n = len(sorted_rating)
-        if n % 2 == 1:
-            median_rating = sorted_rating[n // 2]
-        else:
-            mid1 = sorted_rating[n // 2 - 1]
-            mid2 = sorted_rating[n // 2]
-            median_rating = (mid1 + mid2) / 2
-        print(f"Median Rating: {median_rating:.2f}")
-
-        # Maximum and minimum rated movies
-        maximum_rating = max(ratings)
-        for movie in movie_list:
-            if float(movie["rating"]) == maximum_rating:
-                print(f"Maximum rated Movie: {movie['title']}")
-
-        minimum_rating = min(ratings)
-        for movie in movie_list:
-            if float(movie["rating"]) == minimum_rating:
-                print(f"Minimum rated Movie: {movie['title']}")
     def delete_movie(self,movie_name):
         """Delete a movie from the list and update the JSON file."""
         movie_list = self.list_movies()
@@ -128,39 +106,10 @@ class StorageJson(IStorage):
                 movie["movienotes"] = movie_note
         self.update_json(movie_list)
 
-    @staticmethod
-    def serialize_movie(movie):
-        """Serialize and create html tag for each item"""
-        output = ''
-        output += f'<li>\n'
-        output += f'<div class="movie">\n'
-
-        if "movienotes" in movie:
-            output += f'<a href={movie["imdbmovielink"]} target="_blank"><img class="movie-poster" src={movie["poster"]}/><div class ="hide" >{movie["movienotes"]}</div></a>\n'
-        else:
-            output += f'<a href={movie["imdbmovielink"]} target="_blank"><img class="movie-poster" src={movie["poster"]}/></a>\n'
-        output += f'<div class="movie-title">{movie["title"]}</div>\n'
-        output += f'<div class="movie-year">{movie["year"]}</div>\n'
-        output += f'<div class="movie-year">IMDB-Rating:{movie["rating"]}</div>\n'
-        output += '</div>\n'
-        output += '</li>'
-        return output
-
-    @staticmethod
-    def write_newhtml(result):
-        """with new generate data it creates new html file"""
-        with open("_static/index_template.html", "r") as handle:
-            html_content = handle.read()
-
-        html_content = html_content.replace("__TEMPLATE_MOVIE_GRID__", result)
-        html_content = html_content.replace("__TEMPLATE_TITLE__","My Favorite movies")
-
-        with open("_static/movie_website.html", "w") as handle1:
-            handle1.write(html_content)
 
     def generate_website(self):
         result = ""
         movie_data = self.list_movies()
         for index,movie in enumerate(movie_data):
-            result += StorageJson.serialize_movie(movie)
-        StorageJson.write_newhtml(result)
+            result += SerializeData.serialize_movie(movie)
+        SerializeData.write_newhtml(result)

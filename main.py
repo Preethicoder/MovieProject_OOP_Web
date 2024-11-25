@@ -6,7 +6,7 @@ import sys
 
 
 
-if __name__ == "__main__":
+"""if __name__ == "__main__":
     n = len(sys.argv)
     if n < 2:
         print("Usage: python3 main.py <file.json/csv>")
@@ -28,7 +28,7 @@ if __name__ == "__main__":
         except FileNotFoundError:
             print(f"File not found: {file_name}")
         except Exception as e:
-            print(f"An error occurred: {e}")
+            print(f"An error occurred: {e}")"""
 
 """storage = StorageJson("data/preethi_movicatalog.json")
 movie_app = MovieApp(storage)

@@ -76,6 +76,7 @@ class MovieApp:
             movie_link = self.fetch_movielink(data["imdbID"])
         else:
             movie_link = ""
+        movie_name = data["Title"]
         movie_year = data["Year"]
         movie_rating = data["imdbRating"]
         movie_poster = data["Poster"]
@@ -110,20 +111,44 @@ class MovieApp:
         """get list of movies from IStorage"""
         movies = self._storage.list_movies()
         for index,movie in enumerate(movies):
-            print(f"{index + 1}:{movies[index]['title']}")
+            print(f"{index + 1}:{movies[index]['title']}:{movies[index]['rating']}")
 
     def _command_stats(self):
-        self._storage.stats()
+        movie_list =self._storage.stats()
+        ratings = [float(movie["rating"]) if movie["rating"] != "N/A" else 0.0 for movie in movie_list]
+        avg_rating = sum(ratings) / len(ratings)
+        print(f"Average rating: {avg_rating:.2f}")
+
+        sorted_rating = sorted(ratings)
+        n = len(sorted_rating)
+        if n % 2 == 1:
+            median_rating = sorted_rating[n // 2]
+        else:
+            mid1 = sorted_rating[n // 2 - 1]
+            mid2 = sorted_rating[n // 2]
+            median_rating = (mid1 + mid2) / 2
+        print(f"Median Rating: {median_rating:.2f}")
+
+        # Maximum and minimum rated movies
+        maximum_rating = max(ratings)
+        for movie in movie_list:
+            if float(movie["rating"]) == maximum_rating:
+                print(f"Maximum rated Movie: {movie['title']}")
+
+        minimum_rating = min(ratings)
+        for movie in movie_list:
+            if float(movie["rating"]) == minimum_rating:
+                print(f"Minimum rated Movie: {movie['title']}")
 
     def _command_random_movies(self):
         self._storage.random_movies()
 
     def _command_search_movie(self):
         movie_name = input("Enter the movie name to be searched: ")
-        if not self.is_present(movie_name):
+        """if not self.is_present(movie_name):
             print("Movie not present")
-        else:
-            self._storage.search_movie(movie_name)
+        else:"""
+        self._storage.search_movie(movie_name)
 
     def _command_movies_sorted_by_rating(self):
         self._storage.movie_sorted_by_rating()
@@ -133,9 +158,9 @@ class MovieApp:
 
     def _command_filter_movies(self):
         """Filter movies based on user rating."""
-        user_rating = input("Enter minimum rating (leave blank for no minimum rating):")
-        start_year = input("Enter start year (leave blank for no start year):")
-        end_year = input("leave blank for no end year")
+        user_rating = input("Enter minimum rating:")
+        start_year = input("Enter start year:")
+        end_year = input("Enter end year:")
         self._storage.filter_movies(user_rating, start_year, end_year)
 
     def _command_generate_website(self):
