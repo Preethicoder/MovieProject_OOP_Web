@@ -1,12 +1,11 @@
+"""This is main file to start the program"""
+import sys
 from storage.storage_csv import StorageCsv
 from storage.storage_json import StorageJson
 from movie_app import MovieApp
-import sys
 
 
-
-
-"""if __name__ == "__main__":
+if __name__ == "__main__":
     n = len(sys.argv)
     if n < 2:
         print("Usage: python3 main.py <file.json/csv>")
@@ -28,7 +27,7 @@ import sys
         except FileNotFoundError:
             print(f"File not found: {file_name}")
         except Exception as e:
-            print(f"An error occurred: {e}")"""
+            print(f"An error occurred: {e}")
 
 """storage = StorageJson("data/preethi_movicatalog.json")
 movie_app = MovieApp(storage)
@@ -36,7 +35,3 @@ movie_app.run()"""
 """storage_csv = StorageCsv("data/movies.csv")
 movie_app1 = MovieApp(storage_csv)
 movie_app1.run()"""
-
-
-
-

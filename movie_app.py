@@ -1,10 +1,9 @@
 import os
-
 import requests
 from dotenv import load_dotenv
 
 load_dotenv()
-display_menu = """********** My Movies Database **********
+DISPLAY_MENU = """********** My Movies Database **********
 
 Menu:
 0. Exit
@@ -26,6 +25,7 @@ API_KEY = os.getenv('API_KEY')
 
 class MovieApp:
     def __init__(self, storage):
+        """to initilaize the object to corresponding class"""
         self._storage = storage
 
     def is_present(self, movie_name):
@@ -42,7 +42,7 @@ class MovieApp:
             't': movie_name
         }
         try:
-            res = requests.get(url, params=params)
+            res = requests.get(url, params=params,  timeout=10)
             data = res.json()
             if data.get('Response') == 'False':
                 print("Movie not found")
@@ -56,9 +56,9 @@ class MovieApp:
             return None
 
     @staticmethod
-    def fetch_movielink(imdb_id):
+    def fetch_movielink(imdb_movieid):
         """based on the imdb_id it creates the url link for the movie"""
-        imdb_id = imdb_id
+        imdb_id = imdb_movieid
         imdb_url = f"https://www.imdb.com/title/{imdb_id}/"
 
         return imdb_url
@@ -85,7 +85,8 @@ class MovieApp:
         if self.is_present(movie_name):
             print(f"The movie '{movie_name}' is already present.")
         else:
-            self._storage.add_movie(movie_name, movie_year, movie_rating, movie_poster, imdb_link, "")
+            self._storage.add_movie(movie_name, movie_year,
+                                    movie_rating, movie_poster, imdb_link, "")
             print("Movie added successfully.")
 
     def _command_delete_movie(self):
@@ -111,11 +112,12 @@ class MovieApp:
         """get list of movies from IStorage"""
         movies = self._storage.list_movies()
         for index,movie in enumerate(movies):
-            print(f"{index + 1}:{movies[index]['title']}:{movies[index]['rating']}")
+            print(f"{index + 1}:{movie[index]['title']}:{movie[index]['rating']}")
 
     def _command_stats(self):
         movie_list =self._storage.stats()
-        ratings = [float(movie["rating"]) if movie["rating"] != "N/A" else 0.0 for movie in movie_list]
+        ratings = [float(movie["rating"])
+                   if movie["rating"] != "N/A" else 0.0 for movie in movie_list]
         avg_rating = sum(ratings) / len(ratings)
         print(f"Average rating: {avg_rating:.2f}")
 
@@ -145,9 +147,6 @@ class MovieApp:
 
     def _command_search_movie(self):
         movie_name = input("Enter the movie name to be searched: ")
-        """if not self.is_present(movie_name):
-            print("Movie not present")
-        else:"""
         self._storage.search_movie(movie_name)
 
     def _command_movies_sorted_by_rating(self):
@@ -168,6 +167,7 @@ class MovieApp:
         print("Website was successfully generated to the file movie_website.html")
 
     def run(self):
+        """Main function to display the menu and handle user inputs."""
         func_dict = {
             "1": self._command_list_movies,
             "2": self._command_add_movie,
@@ -182,8 +182,8 @@ class MovieApp:
             "11": self._command_generate_website
 
         }
-        """Main function to display the menu and handle user inputs."""
-        print(display_menu)
+
+        print(DISPLAY_MENU)
         while True:
             try:
                 user_input = input("Enter your choice: ").strip()
@@ -214,4 +214,4 @@ class MovieApp:
 
             # Display the menu again for the next round of input
             input("\nPress Enter to display the menu...")
-            print(display_menu)
+            print(DISPLAY_MENU)

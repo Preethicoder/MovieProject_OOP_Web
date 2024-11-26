@@ -1,19 +1,21 @@
-from scripts.serializedata import SerializeData
-from storage.istorage import IStorage
-import os
 import json
+import os
 import random
 
+from scripts.serializedata import SerializeData
+from storage.istorage import IStorage
+
+
 class StorageJson(IStorage):
-    def __init__(self,file_path):
+    def __init__(self, file_path):
         self.file_path = file_path
 
-    def update_json(self,movie_list):
+    def update_json(self, movie_list):
         """Update the JSON file with the modified movie list."""
         with open(self.file_path, "w", encoding="utf-8") as handle:
             json.dump(movie_list, handle, indent=4)
 
-    def search_movie(self,search_item):
+    def search_movie(self, search_item):
         """Search for movies containing the search term in the title."""
         movie_list = self.list_movies()
 
@@ -59,14 +61,14 @@ class StorageJson(IStorage):
                   f"Movie Rating: {movies['rating']}")
             print("-" * 100)
 
-    def add_movie(self,movie_name, movie_year, movie_rating, poster,imdb_movielink, movie_notes):
+    def add_movie(self, movie_name, movie_year, movie_rating, poster, imdb_movielink, movie_notes):
         """Add a new movie to the list and update the JSON file."""
         movie_dict = {
             "title": movie_name,
             "year": movie_year,
             "rating": movie_rating,
-            "poster":poster,
-            "imdbmovielink":imdb_movielink,
+            "poster": poster,
+            "imdbmovielink": imdb_movielink,
             "movienotes": movie_notes
         }
         data = self.list_movies()
@@ -78,7 +80,7 @@ class StorageJson(IStorage):
         movie_list = self.list_movies()
         return movie_list
 
-    def delete_movie(self,movie_name):
+    def delete_movie(self, movie_name):
         """Delete a movie from the list and update the JSON file."""
         movie_list = self.list_movies()
 
@@ -91,14 +93,12 @@ class StorageJson(IStorage):
         """Pick and display a random movie."""
         movie_list = self.list_movies()
         random_movie = random.choice(movie_list)
-
-        # Display the randomly selected movie details
         print("Randomly Selected Movie:")
         print(f"Title: {random_movie['title']}")
         print(f"Rating: {random_movie['rating']}")
         print(f"Year: {random_movie['year']}")
 
-    def update_movie(self,movie_name, movie_note):
+    def update_movie(self, movie_name, movie_note):
         """Update the rating of a movie and update the JSON file."""
         movie_list = self.list_movies()
         for movie in movie_list:
@@ -106,10 +106,9 @@ class StorageJson(IStorage):
                 movie["movienotes"] = movie_note
         self.update_json(movie_list)
 
-
     def generate_website(self):
         result = ""
         movie_data = self.list_movies()
-        for index,movie in enumerate(movie_data):
+        for movie in movie_data:
             result += SerializeData.serialize_movie(movie)
         SerializeData.write_newhtml(result)
